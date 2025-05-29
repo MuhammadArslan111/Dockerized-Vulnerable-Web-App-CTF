@@ -136,9 +136,9 @@ def init_challenges():
             'points': 100
         },
         {
-            'name': 'SQL Injection - User Enumeration',
-            'description': 'Find all user information using SQL injection. The flag is in another user\'s secret note.',
-            'flag': 'FLAG{try_harder}',
+            'name': 'XXS Attacks',
+            'description': 'Exploite the XSS and capture the flag.',
+            'flag': 'FLAG{xss_master}',
             'points': 150
         },
         {
@@ -146,6 +146,12 @@ def init_challenges():
             'description': 'Exploit the product search functionality to find hidden product keys.',
             'flag': 'FLAG{product_master}',
             'points': 200
+        },
+        {
+            'name': 'Command Injection',
+            'description': 'Exploit the ping command to execute arbitrary system commands and find the flag.',
+            'flag': 'FLAG{command_injection_master}',
+            'points': 250
         }
     ]
     

