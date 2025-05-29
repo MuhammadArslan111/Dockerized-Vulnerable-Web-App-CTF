@@ -43,7 +43,7 @@ To stop all services and clean up containers, run:
 
 ## Project URLs
 
-## Main Portal URLs
+### Main Portal URLs
 
 - **Portal Home:** [http://localhost:43721](http://localhost:43721)  
 - **Login Page:** [http://localhost:43721/login](http://localhost:43721/login)  
@@ -53,7 +53,7 @@ To stop all services and clean up containers, run:
 
 ---
 
-## Challenge URLs (Vulnerable Web Application)
+### Challenge URLs (Vulnerable Web Application)
 
 - **Main Challenge Page:** [http://localhost:43722](http://localhost:43722)  
 - **Login Page:** [http://localhost:43722/login](http://localhost:43722/login)  
