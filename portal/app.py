@@ -129,7 +129,14 @@ def submit_flag():
 @app.route('/scoreboard')
 def scoreboard():
     users = User.query.order_by(User.score.desc()).all()
-    return render_template('scoreboard.html', users=users)
+    # Convert User objects to dictionaries for JSON serialization
+    users_data = [{
+        'id': user.id,
+        'username': user.username,
+        'score': user.score,
+        'solved_challenges': len(user.solved_challenges)
+    } for user in users]
+    return render_template('scoreboard.html', users=users, users_data=users_data)
 
 def init_challenges():
     challenges = [

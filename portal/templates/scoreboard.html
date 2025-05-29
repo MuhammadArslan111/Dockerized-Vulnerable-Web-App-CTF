@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('scoreChart').getContext('2d');
     
     // Get the top 5 users for the graph
-    const topUsers = {{ users|tojson|safe }}.slice(0, 5);
+    const topUsers = {{ users_data|tojson|safe }}.slice(0, 5);
     
     // Generate random data points for demonstration
     // In a real application, this would come from your backend
