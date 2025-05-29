@@ -11,6 +11,17 @@
         </div>
     </div>
 
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Score Progression</h5>
+                    <canvas id="scoreChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="card shadow-sm">
@@ -102,4 +113,81 @@
         border-bottom: none;
     }
 </style>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('scoreChart').getContext('2d');
+    
+    // Get the top 5 users for the graph
+    const topUsers = {{ users|tojson|safe }}.slice(0, 5);
+    
+    // Generate random data points for demonstration
+    // In a real application, this would come from your backend
+    const generateDataPoints = (maxScore) => {
+        const points = [];
+        let currentScore = 0;
+        for (let i = 0; i < 10; i++) {
+            currentScore += Math.floor(Math.random() * (maxScore / 10));
+            points.push(currentScore);
+        }
+        return points;
+    };
+
+    const datasets = topUsers.map((user, index) => ({
+        label: user.username,
+        data: generateDataPoints(user.score),
+        borderColor: [
+            '#3498db',
+            '#2ecc71',
+            '#e74c3c',
+            '#f1c40f',
+            '#9b59b6'
+        ][index],
+        tension: 0.4,
+        fill: false
+    }));
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Array.from({length: 10}, (_, i) => `Day ${i + 1}`),
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Score Progression Over Time'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Score'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Time'
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
 {% endblock %} 

@@ -53,14 +53,14 @@ def register():
         password = request.form.get('password')
         
         if User.query.filter_by(username=username).first():
-            flash('Username already exists')
+            flash('Username already exists', 'error')
             return redirect(url_for('register'))
         
         user = User(username=username, password_hash=generate_password_hash(password))
         db.session.add(user)
         db.session.commit()
         
-        flash('Registration successful')
+        flash('Registration successful! Please login.', 'success')
         return redirect(url_for('login'))
     
     return render_template('register.html')
@@ -74,23 +74,27 @@ def login():
         
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
+            flash('Welcome back, ' + username + '!', 'success')
             return redirect(url_for('dashboard'))
         
-        flash('Invalid username or password')
+        flash('Invalid username or password', 'error')
     return render_template('login.html')
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
+    flash('You have been logged out successfully', 'info')
     return redirect(url_for('index'))
 
 @app.route('/dashboard')
 @login_required
 def dashboard():
     challenges = Challenge.query.all()
-    current_user.solved_challenges
-    return render_template('dashboard.html', challenges=challenges)
+    solved_challenges = [sc.challenge_id for sc in current_user.solved_challenges]
+    return render_template('dashboard.html', 
+                         challenges=challenges, 
+                         solved_challenges=solved_challenges)
 
 @app.route('/submit_flag', methods=['POST'])
 @login_required
@@ -106,7 +110,7 @@ def submit_flag():
     ).first()
     
     if existing_solve:
-        flash('You have already solved this challenge.')
+        flash('You have already solved this challenge!', 'info')
         return redirect(url_for('dashboard'))
     
     if submitted_flag == challenge.flag:
@@ -116,9 +120,9 @@ def submit_flag():
         current_user.score += challenge.points
         db.session.commit()
         
-        flash('Correct flag! Points added to your score.')
+        flash(f'Congratulations! You solved the challenge and earned {challenge.points} points!', 'success')
     else:
-        flash('Incorrect flag. Try again!')
+        flash('Incorrect flag. Try again!', 'error')
     
     return redirect(url_for('dashboard'))
 
@@ -136,13 +140,13 @@ def init_challenges():
             'points': 100
         },
         {
-            'name': 'XXS Attacks',
-            'description': 'Exploite the XSS and capture the flag.',
+            'name': 'XSS Attacks',
+            'description': 'Exploit the XSS vulnerability and capture the flag.',
             'flag': 'FLAG{xss_master}',
             'points': 150
         },
         {
-            'name': 'File Upload Challenge ',
+            'name': 'File Upload Challenge',
             'description': 'Exploit the product search functionality to find hidden product keys.',
             'flag': 'FLAG{product_master}',
             'points': 200

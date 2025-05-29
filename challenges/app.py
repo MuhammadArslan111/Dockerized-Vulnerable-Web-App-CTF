@@ -118,24 +118,44 @@ init_db()
 
 # Common CSS styles
 COMMON_STYLES = '''
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2c3e50;
+        --success-color: #2ecc71;
+        --danger-color: #e74c3c;
+        --warning-color: #f1c40f;
+        --light-color: #f8f9fa;
+        --dark-color: #2c3e50;
+        --border-radius: 8px;
+        --box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        --transition: all 0.3s ease;
+    }
+
     body { 
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #f8f9fa;
-        color: #333;
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        line-height: 1.6;
     }
+
     .container { 
         max-width: 1200px;
         margin: 0 auto;
         padding: 20px;
     }
+
     .nav {
-        background-color: #2c3e50;
+        background-color: var(--secondary-color);
         padding: 15px 0;
         margin-bottom: 30px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: var(--box-shadow);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
     }
+
     .nav-content {
         max-width: 1200px;
         margin: 0 auto;
@@ -144,57 +164,217 @@ COMMON_STYLES = '''
         justify-content: space-between;
         align-items: center;
     }
+
     .nav a {
         color: white;
         text-decoration: none;
         margin-right: 20px;
         font-weight: 500;
-        transition: color 0.3s;
+        transition: var(--transition);
+        padding: 8px 15px;
+        border-radius: var(--border-radius);
     }
+
     .nav a:hover {
-        color: #3498db;
+        background-color: rgba(255,255,255,0.1);
+        transform: translateY(-2px);
     }
+
     .card {
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        padding: 20px;
-        margin-bottom: 20px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 25px;
+        margin-bottom: 25px;
+        transition: var(--transition);
     }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+
     .btn {
-        background: #3498db;
+        background: var(--primary-color);
         color: white;
         border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
+        padding: 12px 25px;
+        border-radius: var(--border-radius);
         cursor: pointer;
-        transition: background 0.3s;
+        transition: var(--transition);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9em;
     }
+
     .btn:hover {
         background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52,152,219,0.3);
     }
+
     .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
+
     .form-group label {
         display: block;
-        margin-bottom: 5px;
-        font-weight: 500;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--dark-color);
     }
+
     .form-control {
         width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: var(--border-radius);
+        font-size: 1em;
+        transition: var(--transition);
     }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+        outline: none;
+    }
+
     .error {
-        color: #e74c3c;
-        margin-top: 10px;
+        color: var(--danger-color);
+        background: #fde8e8;
+        padding: 12px;
+        border-radius: var(--border-radius);
+        margin-top: 15px;
+        font-weight: 500;
+        border-left: 4px solid var(--danger-color);
     }
+
     .success {
-        color: #2ecc71;
-        margin-top: 10px;
+        color: var(--success-color);
+        background: #e8f8e8;
+        padding: 12px;
+        border-radius: var(--border-radius);
+        margin-top: 15px;
+        font-weight: 500;
+        border-left: 4px solid var(--success-color);
+    }
+
+    .hint {
+        color: #666;
+        font-size: 0.95em;
+        margin-top: 15px;
+        font-style: italic;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: var(--border-radius);
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .challenges-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+    }
+
+    .challenge-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 25px;
+        box-shadow: var(--box-shadow);
+        transition: var(--transition);
+        border: 1px solid #e0e0e0;
+    }
+
+    .challenge-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .challenge-card h3 {
+        color: var(--dark-color);
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 1.4em;
+    }
+
+    .challenge-card p {
+        color: #666;
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 25px 0;
+    }
+
+    .table th {
+        background: var(--dark-color);
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .table td {
+        padding: 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .table tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .badge-success {
+        background: var(--success-color);
+        color: white;
+    }
+
+    .badge-warning {
+        background: var(--warning-color);
+        color: var(--dark-color);
+    }
+
+    .badge-danger {
+        background: var(--danger-color);
+        color: white;
+    }
+
+    .badge-info {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 15px;
+        }
+        
+        .nav-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .nav a {
+            display: block;
+            margin: 10px 0;
+        }
+        
+        .challenges-grid {
+            grid-template-columns: 1fr;
+        }
     }
 '''
 
