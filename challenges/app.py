@@ -266,7 +266,7 @@ LOGIN_TEMPLATE = '''
         <div class="login-container">
             <div class="card">
                 <h2>Company Portal Login</h2>
-                <p class="hint">Hint: Try SQL injection payloads in the username or password field</p>
+                <p class="hint">Hint: Try SQL injection payloads</p>
                 <form method="POST">
                     <div class="form-group">
                         <label>Username:</label>
@@ -547,13 +547,6 @@ XSS_TEMPLATE = '''
         <div class="hint">
             <strong>Hint:</strong> Try injecting JavaScript that can access and exfiltrate cookies.
             The flag will be revealed when you successfully inject a payload that could steal cookies.
-        </div>
-        
-        <div class="payload-examples">
-            <strong>Example Payloads:</strong>
-            <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code>
-            <code>&lt;img src=x onerror=alert(document.cookie)&gt;</code>
-            <code>&lt;svg onload=alert(document.cookie)&gt;</code>
         </div>
         
         <form method="POST" action="{{ url_for('xss_challenge') }}">

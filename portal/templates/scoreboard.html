@@ -4,29 +4,102 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Scoreboard</h1>
-    
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Username</th>
-                    <th>Score</th>
-                    <th>Challenges Solved</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr {% if current_user.is_authenticated and user.id == current_user.id %}class="table-primary"{% endif %}>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.score }}</td>
-                    <td>{{ user.solved_challenges|length }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4 text-center mb-3">🏆 Scoreboard</h1>
+            <p class="text-center text-muted">Track your progress and compete with other participants</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col" class="text-center" style="width: 10%">Rank</th>
+                                    <th scope="col" style="width: 40%">Username</th>
+                                    <th scope="col" class="text-center" style="width: 25%">Score</th>
+                                    <th scope="col" class="text-center" style="width: 25%">Challenges Solved</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr {% if current_user.is_authenticated and user.id == current_user.id %}class="table-primary fw-bold"{% endif %}>
+                                    <td class="text-center">
+                                        {% if loop.index == 1 %}
+                                            <span class="badge bg-warning text-dark">🥇</span>
+                                        {% elif loop.index == 2 %}
+                                            <span class="badge bg-secondary">🥈</span>
+                                        {% elif loop.index == 3 %}
+                                            <span class="badge bg-danger">🥉</span>
+                                        {% else %}
+                                            <span class="text-muted">#{{ loop.index }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle bg-primary text-white me-2">
+                                                {{ user.username[0]|upper }}
+                                            </div>
+                                            {{ user.username }}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success">{{ user.score }} pts</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info">{{ user.solved_challenges|length }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    .avatar-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .table > :not(caption) > * > * {
+        padding: 1rem;
+    }
+
+    .badge {
+        padding: 0.5em 1em;
+        font-size: 0.9em;
+    }
+
+    .table-hover tbody tr:hover {
+        transform: scale(1.01);
+        transition: transform 0.2s ease;
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+
+    .table-dark {
+        background-color: #2c3e50;
+    }
+
+    .table-dark th {
+        border-bottom: none;
+    }
+</style>
 {% endblock %} 

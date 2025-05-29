@@ -142,7 +142,7 @@ def init_challenges():
             'points': 150
         },
         {
-            'name': 'SQL Injection - Product Search',
+            'name': 'File Upload Challenge ',
             'description': 'Exploit the product search functionality to find hidden product keys.',
             'flag': 'FLAG{product_master}',
             'points': 200
