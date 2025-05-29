@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CTF Platform{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Welcome, {{ current_user.username }}!</h1>
+    <p>Your current score: {{ current_user.score }}</p>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h2>Available Challenges</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Challenge</th>
+                            <th>Description</th>
+                            <th>Points</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for challenge in challenges %}
+                        <tr>
+                            <td>{{ challenge.name }}</td>
+                            <td>{{ challenge.description }}</td>
+                            <td>{{ challenge.points }}</td>
+                            <td>
+                                {% if challenge in current_user.solved_challenges|map(attribute='challenge')|list %}
+                                    <span class="badge bg-success">Solved</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Unsolved</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if challenge not in current_user.solved_challenges|map(attribute='challenge')|list %}
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#flagModal{{ challenge.id }}">
+                                        Submit Flag
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-success" disabled>
+                                        Completed
+                                    </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        
+                        <!-- Flag Submission Modal -->
+                        <div class="modal fade" id="flagModal{{ challenge.id }}" tabindex="-1" aria-labelledby="flagModalLabel{{ challenge.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="flagModalLabel{{ challenge.id }}">Submit Flag for {{ challenge.name }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ url_for('submit_flag') }}" method="POST">
+                                        <div class="modal-body">
+                                            <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
+                                            <div class="mb-3">
+                                                <label for="flag" class="form-label">Enter Flag:</label>
+                                                <input type="text" class="form-control" id="flag" name="flag" required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h2>Challenge Links</h2>
+            <div class="list-group">
+                <a href="http://localhost:43722" class="list-group-item list-group-item-action" target="_blank">
+                    Vulnerable Web Application
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

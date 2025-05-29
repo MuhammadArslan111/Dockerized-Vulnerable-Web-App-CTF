@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to CTF Platform{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 text-center">
+            <h1 class="display-4 mb-4">Welcome to the CTF Portal</h1>
+            <p class="lead mb-4">Test your security skills with our SQL injection challenges. Find and exploit vulnerabilities to earn points!</p>
+            
+            {% if not current_user.is_authenticated %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4 me-md-2">Login</a>
+                <a href="{{ url_for('register') }}" class="btn btn-outline-secondary btn-lg px-4">Register</a>
+            </div>
+            {% else %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4">Go to Dashboard</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">SQL Injection Challenges</h5>
+                    <p class="card-text">Practice your SQL injection skills with our vulnerable web application. Find and exploit vulnerabilities to discover hidden flags.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Score Points</h5>
+                    <p class="card-text">Submit flags to earn points and climb the leaderboard. Each challenge has different point values based on difficulty.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Learn Security</h5>
+                    <p class="card-text">Improve your web security knowledge by practicing with real-world vulnerabilities in a safe environment.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Scoreboard - CTF Platform{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Scoreboard</h1>
+    
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Score</th>
+                    <th>Challenges Solved</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr {% if current_user.is_authenticated and user.id == current_user.id %}class="table-primary"{% endif %}>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.score }}</td>
+                    <td>{{ user.solved_challenges|length }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} 
